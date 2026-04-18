@@ -49,7 +49,38 @@ class BTApplication : Application() {
         }
         realtimeRepo.vehicles
             .take(3)
-            .onEach { list -> Log.i(TAG, "vehicles tick: ${list.size}") }
+            .onEach { list ->
+                Log.i(TAG, "vehicles tick: ${list.size}")
+                val v = list.firstOrNull { it.tripId != null } ?: return@onEach
+                val route = transitRepo.getRouteForTrip(v.tripId!!)
+                val schedule = transitRepo.getScheduledStopsForTrip(v.tripId!!)
+                Log.i(
+                    TAG,
+                    "bus ${v.vehicleId} trip=${v.tripId} -> " +
+                        "route=${route?.shortName ?: "?"} " +
+                        "schedule=${schedule.size} stops; " +
+                        "next=${schedule.firstOrNull()?.stop?.name}"
+                )
+
+                val rid = route?.routeId ?: return@onEach
+                val stopsOnRoute = transitRepo.stopsOnRoute(rid)
+                val shapes = transitRepo.getShapesForRoute(rid)
+                Log.i(
+                    TAG,
+                    "route $rid -> stopsOnRoute=${stopsOnRoute.size}, " +
+                        "shapes=${shapes.size} (points: ${shapes.map { it.size }})"
+                )
+                val stop0 = stopsOnRoute.firstOrNull()
+                if (stop0 != null) {
+                    val byId = transitRepo.getStopById(stop0.stopId)
+                    val routesForStop = transitRepo.stopRouteIndex()[stop0.stopId].orEmpty()
+                    Log.i(
+                        TAG,
+                        "getStopById(${stop0.stopId}) -> ${byId?.name}; " +
+                            "routes serving this stop: $routesForStop"
+                    )
+                }
+            }
             .launchIn(scope)
 
         arrivalWatcher.start()
