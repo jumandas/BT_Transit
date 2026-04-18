@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.bt_transit.data.local.entity.StopEntity
+import com.example.bt_transit.data.local.projection.StopRoutePair
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -29,4 +30,20 @@ interface StopDao {
 
     @Query("SELECT COUNT(*) FROM stops")
     suspend fun count(): Int
+
+    @Query("""
+        SELECT DISTINCT s.* FROM stops s
+        INNER JOIN stop_times st ON st.stopId = s.stopId
+        INNER JOIN trips t ON t.tripId = st.tripId
+        WHERE t.routeId = :routeId
+    """)
+    suspend fun getStopsOnRoute(routeId: String): List<StopEntity>
+
+    @Query("""
+        SELECT DISTINCT s.stopId AS stopId, t.routeId AS routeId
+        FROM stops s
+        INNER JOIN stop_times st ON st.stopId = s.stopId
+        INNER JOIN trips t ON t.tripId = st.tripId
+    """)
+    suspend fun getStopRouteIndex(): List<StopRoutePair>
 }

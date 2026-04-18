@@ -18,4 +18,12 @@ interface RouteDao {
 
     @Query("SELECT * FROM routes WHERE routeId = :id")
     suspend fun getById(id: String): RouteEntity?
+
+    @Query("""
+        SELECT r.* FROM routes r
+        INNER JOIN trips t ON t.routeId = r.routeId
+        WHERE t.tripId = :tripId
+        LIMIT 1
+    """)
+    suspend fun findByTripId(tripId: String): RouteEntity?
 }
