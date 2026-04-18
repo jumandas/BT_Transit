@@ -1,0 +1,106 @@
+{
+  "nodes": [
+    {
+      "id": "ic_launcher_round_appicon",
+      "label": "Round App Launcher Icon",
+      "file_type": "image",
+      "source_file": "app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "ic_launcher_round_androidrobot",
+      "label": "Android Robot / Default Android Icon",
+      "file_type": "image",
+      "source_file": "app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "ic_launcher_round_greenbackground",
+      "label": "Green Background with Grid Pattern",
+      "file_type": "image",
+      "source_file": "app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "ic_launcher_round_roundshape",
+      "label": "Circular / Round Icon Shape",
+      "file_type": "image",
+      "source_file": "app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "ic_launcher_round_mipmap_xxxhdpi",
+      "label": "XXXHDPI Mipmap Resource Density",
+      "file_type": "image",
+      "source_file": "app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "from": "ic_launcher_round_appicon",
+      "to": "ic_launcher_round_androidrobot",
+      "relation": "displays",
+      "confidence_score": 1.0
+    },
+    {
+      "from": "ic_launcher_round_appicon",
+      "to": "ic_launcher_round_greenbackground",
+      "relation": "has_background",
+      "confidence_score": 1.0
+    },
+    {
+      "from": "ic_launcher_round_appicon",
+      "to": "ic_launcher_round_roundshape",
+      "relation": "has_shape",
+      "confidence_score": 1.0
+    },
+    {
+      "from": "ic_launcher_round_appicon",
+      "to": "ic_launcher_round_mipmap_xxxhdpi",
+      "relation": "belongs_to_density",
+      "confidence_score": 1.0
+    },
+    {
+      "from": "ic_launcher_round_appicon",
+      "to": "ic_launcher_round_androidrobot",
+      "relation": "uses_default_android_placeholder",
+      "confidence_score": 0.9
+    },
+    {
+      "from": "ic_launcher_round_greenbackground",
+      "to": "ic_launcher_round_androidrobot",
+      "relation": "contains_foreground",
+      "confidence_score": 1.0
+    },
+    {
+      "from": "ic_launcher_round_appicon",
+      "to": "ic_launcher_round_appicon",
+      "relation": "is_round_variant_of_ic_launcher",
+      "confidence_score": 0.9
+    }
+  ],
+  "hyperedges": [],
+  "input_tokens": 512,
+  "output_tokens": 420
+}

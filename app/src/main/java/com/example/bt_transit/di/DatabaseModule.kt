@@ -8,6 +8,7 @@ import com.example.bt_transit.data.local.dao.ShapeDao
 import com.example.bt_transit.data.local.dao.StopDao
 import com.example.bt_transit.data.local.dao.StopTimeDao
 import com.example.bt_transit.data.local.dao.TripDao
+import com.example.bt_transit.data.local.dao.RatingDao
 import com.example.bt_transit.data.local.dao.WaypointDao
 import dagger.Module
 import dagger.Provides
@@ -24,6 +25,7 @@ object DatabaseModule {
     @Singleton
     fun provideDatabase(@ApplicationContext ctx: Context): BTDatabase =
         Room.databaseBuilder(ctx, BTDatabase::class.java, "bt_transit.db")
+            .addMigrations(BTDatabase.MIGRATION_2_3)
             .fallbackToDestructiveMigration()
             .build()
 
@@ -33,4 +35,5 @@ object DatabaseModule {
     @Provides fun provideStopTimeDao(db: BTDatabase): StopTimeDao = db.stopTimeDao()
     @Provides fun provideShapeDao(db: BTDatabase): ShapeDao = db.shapeDao()
     @Provides fun provideWaypointDao(db: BTDatabase): WaypointDao = db.waypointDao()
+    @Provides fun provideRatingDao(db: BTDatabase): RatingDao = db.ratingDao()
 }

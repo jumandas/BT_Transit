@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.util.Log
 import androidx.room.withTransaction
 import com.example.bt_transit.data.local.BTDatabase
+import com.example.bt_transit.data.local.projection.DirectTripResult
 import com.example.bt_transit.data.local.entity.RouteEntity
 import com.example.bt_transit.data.local.entity.ShapeEntity
 import com.example.bt_transit.data.local.entity.StopEntity
@@ -14,8 +15,11 @@ import com.example.bt_transit.domain.model.GeoPoint
 import com.example.bt_transit.domain.model.Route
 import com.example.bt_transit.domain.model.ScheduledStop
 import com.example.bt_transit.domain.model.Stop
+import kotlin.math.pow
+import kotlin.math.sqrt
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -94,6 +98,89 @@ class TransitRepository @Inject constructor(
         val trip = db.tripDao().getByRoute(routeId).firstOrNull { it.shapeId != null }
             ?: return emptyList()
         return getShape(trip.shapeId!!)
+    }
+
+    suspend fun getShapeForRouteAndDirection(routeId: String, directionId: Int): List<GeoPoint> {
+        val shapeId = db.tripDao().getShapeIdForRouteAndDirection(routeId, directionId)
+            ?: return emptyList()
+        return getShape(shapeId)
+    }
+
+    suspend fun stopsOnRouteAndDirection(routeId: String, directionId: Int): List<Stop> =
+        db.stopDao().getStopsOnRouteAndDirection(routeId, directionId).map { it.toDomain() }
+
+    suspend fun getTripIdsForRouteAndDirection(routeId: String, directionId: Int): Set<String> =
+        db.tripDao().getByRouteAndDirection(routeId, directionId).map { it.tripId }.toSet()
+
+    suspend fun searchStops(query: String): List<Stop> =
+        db.stopDao().searchByName("%$query%").map { it.toDomain() }
+
+    suspend fun getNextDeparturesForRoute(
+        routeId: String,
+        currentTime: String,
+        limit: Int = 5
+    ): List<String> = db.stopTimeDao().getNextDeparturesForRoute(routeId, currentTime, limit)
+
+    suspend fun getNextDeparturesForStop(
+        routeId: String,
+        stopId: String,
+        currentTime: String,
+        limit: Int = 1
+    ): List<String> = db.stopTimeDao().getNextDeparturesForStop(routeId, stopId, currentTime, limit)
+
+    /** Nearest BT stop to an arbitrary lat/lng (used when the user picks a landmark). */
+    suspend fun nearestStop(lat: Double, lng: Double): Stop? =
+        db.stopDao().findNearest(lat, lng, 1).firstOrNull()?.toDomain()
+
+    /** Full stop-by-stop schedule for the trip whose first stop leaves at [firstDepartureTime]. */
+    suspend fun getTripScheduleByFirstDeparture(
+        routeId: String,
+        firstDepartureTime: String
+    ): List<ScheduledStop> {
+        val tripId = db.stopTimeDao().findTripByFirstDeparture(routeId, firstDepartureTime)
+            ?: return emptyList()
+        return getScheduledStopsForTrip(tripId)
+    }
+
+    /** All routes that serve a given stopId. */
+    suspend fun routesServingStop(stopId: String): List<Route> {
+        val routeIdsForStop = stopRouteIndex()[stopId] ?: return emptyList()
+        if (routeIdsForStop.isEmpty()) return emptyList()
+        val allRoutes = db.routeDao().observeAll().first()
+        val byId = allRoutes.associateBy { it.routeId }
+        return routeIdsForStop.mapNotNull { byId[it]?.toDomain() }
+    }
+
+    suspend fun getActiveTripIdsNear(
+        lat: Double,
+        lng: Double,
+        radiusMeters: Double = 500.0,
+        afterTime: String,
+        beforeTime: String
+    ): Set<String> {
+        val nearbyStops = db.stopDao().findNearest(lat, lng, 20)
+            .filter { stop -> haversineMeters(lat, lng, stop.lat, stop.lng) <= radiusMeters }
+        if (nearbyStops.isEmpty()) return emptySet()
+        return db.stopTimeDao()
+            .getActiveTripIdsNearStops(nearbyStops.map { it.stopId }, afterTime, beforeTime)
+            .toSet()
+    }
+
+    suspend fun findDirectTrip(
+        fromStopId: String,
+        toStopId: String,
+        afterTime: String
+    ): DirectTripResult? =
+        db.stopTimeDao().findDirectTrip(fromStopId, toStopId, afterTime)
+
+    private fun haversineMeters(lat1: Double, lng1: Double, lat2: Double, lng2: Double): Double {
+        val r = 6_371_000.0
+        val dLat = Math.toRadians(lat2 - lat1)
+        val dLng = Math.toRadians(lng2 - lng1)
+        val a = Math.sin(dLat / 2).pow(2) +
+                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                Math.sin(dLng / 2).pow(2)
+        return r * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
     }
 }
 

@@ -1,0 +1,120 @@
+{
+  "nodes": [
+    {
+      "id": "ic_launcher_appicon",
+      "label": "App Launcher Icon",
+      "file_type": "image",
+      "source_file": "app/src/main/res/mipmap-mdpi/ic_launcher.webp",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "ic_launcher_androidrobot",
+      "label": "Android Robot Mascot",
+      "file_type": "image",
+      "source_file": "app/src/main/res/mipmap-mdpi/ic_launcher.webp",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "ic_launcher_roundedsquarebg",
+      "label": "Rounded Square Background",
+      "file_type": "image",
+      "source_file": "app/src/main/res/mipmap-mdpi/ic_launcher.webp",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "ic_launcher_color_green",
+      "label": "Green Color Scheme",
+      "file_type": "image",
+      "source_file": "app/src/main/res/mipmap-mdpi/ic_launcher.webp",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "ic_launcher_btransit_app",
+      "label": "BT Transit Android Application",
+      "file_type": "image",
+      "source_file": "app/src/main/res/mipmap-mdpi/ic_launcher.webp",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "from": "ic_launcher_appicon",
+      "to": "ic_launcher_btransit_app",
+      "relation": "is_launcher_icon_for",
+      "confidence_score": 1.0,
+      "notes": "This webp file is the mipmap-mdpi launcher icon for the BT_Transit app"
+    },
+    {
+      "from": "ic_launcher_appicon",
+      "to": "ic_launcher_androidrobot",
+      "relation": "depicts",
+      "confidence_score": 1.0,
+      "notes": "The icon visually depicts the Android robot mascot (head/face)"
+    },
+    {
+      "from": "ic_launcher_appicon",
+      "to": "ic_launcher_roundedsquarebg",
+      "relation": "has_background_shape",
+      "confidence_score": 1.0,
+      "notes": "The icon uses a rounded square (squircle) background typical of Android adaptive icons"
+    },
+    {
+      "from": "ic_launcher_appicon",
+      "to": "ic_launcher_color_green",
+      "relation": "uses_color_scheme",
+      "confidence_score": 1.0,
+      "notes": "The icon uses a green color palette, matching the Android brand color"
+    },
+    {
+      "from": "ic_launcher_androidrobot",
+      "to": "ic_launcher_color_green",
+      "relation": "rendered_in",
+      "confidence_score": 1.0,
+      "notes": "The Android robot figure is rendered in green"
+    },
+    {
+      "from": "ic_launcher_appicon",
+      "to": "ic_launcher_androidrobot",
+      "relation": "is_default_android_icon",
+      "confidence_score": 0.95,
+      "notes": "This appears to be the default Android Studio-generated launcher icon, not a custom branded one"
+    },
+    {
+      "from": "ic_launcher_btransit_app",
+      "to": "ic_launcher_appicon",
+      "relation": "uses_default_placeholder_icon",
+      "confidence_score": 0.85,
+      "notes": "The BT Transit app likely uses this as a placeholder/default icon rather than a custom transit-branded icon"
+    },
+    {
+      "from": "ic_launcher_roundedsquarebg",
+      "to": "ic_launcher_color_green",
+      "relation": "filled_with",
+      "confidence_score": 0.9,
+      "notes": "The rounded square background is filled with a lighter green tone"
+    }
+  ],
+  "hyperedges": [],
+  "input_tokens": 512,
+  "output_tokens": 420
+}

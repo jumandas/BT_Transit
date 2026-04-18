@@ -20,4 +20,10 @@ interface TripDao {
 
     @Query("SELECT DISTINCT shapeId FROM trips WHERE routeId = :routeId AND shapeId IS NOT NULL")
     suspend fun getShapeIdsForRoute(routeId: String): List<String>
+
+    @Query("SELECT * FROM trips WHERE routeId = :routeId AND directionId = :directionId")
+    suspend fun getByRouteAndDirection(routeId: String, directionId: Int): List<TripEntity>
+
+    @Query("SELECT shapeId FROM trips WHERE routeId = :routeId AND directionId = :directionId AND shapeId IS NOT NULL LIMIT 1")
+    suspend fun getShapeIdForRouteAndDirection(routeId: String, directionId: Int): String?
 }

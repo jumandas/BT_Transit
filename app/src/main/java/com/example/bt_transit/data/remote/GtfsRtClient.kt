@@ -13,9 +13,6 @@ import okhttp3.Request
 import javax.inject.Inject
 import javax.inject.Singleton
 
-import javax.inject.Inject
-import javax.inject.Singleton
-
 @Singleton
 class GtfsRtClient @Inject constructor(private val http: OkHttpClient) {
 

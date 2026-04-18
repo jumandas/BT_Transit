@@ -1,5 +1,8 @@
 package com.example.bt_transit.di
 
+import com.example.bt_transit.data.remote.GtfsRtClient
+import com.example.bt_transit.data.remote.GtfsStaticClient
+import com.example.bt_transit.data.remote.WeatherClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,4 +28,16 @@ object NetworkModule {
             .readTimeout(15, TimeUnit.SECONDS)
             .build()
     }
+
+    @Provides
+    @Singleton
+    fun provideGtfsRtClient(client: OkHttpClient): GtfsRtClient = GtfsRtClient(client)
+
+    @Provides
+    @Singleton
+    fun provideGtfsStaticClient(client: OkHttpClient): GtfsStaticClient = GtfsStaticClient(client)
+
+    @Provides
+    @Singleton
+    fun provideWeatherClient(client: OkHttpClient): WeatherClient = WeatherClient(client)
 }

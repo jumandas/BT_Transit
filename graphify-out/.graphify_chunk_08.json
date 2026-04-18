@@ -1,0 +1,149 @@
+{
+  "nodes": [
+    {
+      "id": "ic_launcher_appicon",
+      "label": "App Launcher Icon (ic_launcher)",
+      "file_type": "image",
+      "source_file": "app/src/main/res/mipmap-xxhdpi/ic_launcher.webp",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "ic_launcher_androidrobot",
+      "label": "Android Robot (Droid) Silhouette",
+      "file_type": "image",
+      "source_file": "app/src/main/res/mipmap-xxhdpi/ic_launcher.webp",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "ic_launcher_greenbg",
+      "label": "Green Grid Background",
+      "file_type": "image",
+      "source_file": "app/src/main/res/mipmap-xxhdpi/ic_launcher.webp",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "ic_launcher_dropshadow",
+      "label": "Drop Shadow Effect",
+      "file_type": "image",
+      "source_file": "app/src/main/res/mipmap-xxhdpi/ic_launcher.webp",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "ic_launcher_roundedrect",
+      "label": "Rounded Rectangle Icon Shape",
+      "file_type": "image",
+      "source_file": "app/src/main/res/mipmap-xxhdpi/ic_launcher.webp",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "ic_launcher_xxhdpi_res",
+      "label": "xxhdpi Mipmap Resource Density",
+      "file_type": "image",
+      "source_file": "app/src/main/res/mipmap-xxhdpi/ic_launcher.webp",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "ic_launcher_btransit_app",
+      "label": "BT Transit Android Application",
+      "file_type": "image",
+      "source_file": "app/src/main/res/mipmap-xxhdpi/ic_launcher.webp",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "from": "ic_launcher_appicon",
+      "to": "ic_launcher_btransit_app",
+      "relation": "is_launcher_icon_for",
+      "confidence_score": 1.0,
+      "note": "This webp file is the launcher icon for the BT Transit app, located in the mipmap-xxhdpi resource directory"
+    },
+    {
+      "from": "ic_launcher_appicon",
+      "to": "ic_launcher_androidrobot",
+      "relation": "contains_visual_element",
+      "confidence_score": 1.0,
+      "note": "The icon visually contains the standard Android robot (droid) silhouette in white/light gray"
+    },
+    {
+      "from": "ic_launcher_appicon",
+      "to": "ic_launcher_greenbg",
+      "relation": "has_background",
+      "confidence_score": 1.0,
+      "note": "The icon background is green with a grid/tile pattern overlay"
+    },
+    {
+      "from": "ic_launcher_appicon",
+      "to": "ic_launcher_dropshadow",
+      "relation": "has_visual_effect",
+      "confidence_score": 1.0,
+      "note": "The Android robot silhouette features a drop shadow applied diagonally"
+    },
+    {
+      "from": "ic_launcher_appicon",
+      "to": "ic_launcher_roundedrect",
+      "relation": "has_shape",
+      "confidence_score": 1.0,
+      "note": "The overall icon is clipped to a rounded rectangle shape, consistent with Android adaptive icon guidelines"
+    },
+    {
+      "from": "ic_launcher_appicon",
+      "to": "ic_launcher_xxhdpi_res",
+      "relation": "belongs_to_density_bucket",
+      "confidence_score": 1.0,
+      "note": "File resides in mipmap-xxhdpi, targeting ~480dpi screen density (3x baseline)"
+    },
+    {
+      "from": "ic_launcher_appicon",
+      "to": "ic_launcher_androidrobot",
+      "relation": "uses_default_android_icon",
+      "confidence_score": 0.95,
+      "note": "The design appears to be the default Android Studio project launcher icon, not a custom branded icon for BT Transit"
+    },
+    {
+      "from": "ic_launcher_btransit_app",
+      "to": "ic_launcher_appicon",
+      "relation": "uses_placeholder_icon",
+      "confidence_score": 0.85,
+      "note": "The default Android robot icon suggests this app may be using a placeholder/template icon rather than a custom branded one"
+    },
+    {
+      "from": "ic_launcher_greenbg",
+      "to": "ic_launcher_androidrobot",
+      "relation": "provides_contrast_for",
+      "confidence_score": 0.9,
+      "note": "The green background provides visual contrast for the white/light Android robot foreground element"
+    }
+  ],
+  "hyperedges": [],
+  "input_tokens": 1024,
+  "output_tokens": 512
+}

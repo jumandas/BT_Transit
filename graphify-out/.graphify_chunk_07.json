@@ -1,0 +1,131 @@
+{
+  "nodes": [
+    {
+      "id": "ic_launcher_round_appicon",
+      "label": "App Launcher Icon (Round)",
+      "file_type": "image",
+      "source_file": "app/src/main/res/mipmap-xhdpi/ic_launcher_round.webp",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "ic_launcher_round_androidrobot",
+      "label": "Android Robot Mascot",
+      "file_type": "image",
+      "source_file": "app/src/main/res/mipmap-xhdpi/ic_launcher_round.webp",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "ic_launcher_round_roundshape",
+      "label": "Round Icon Shape",
+      "file_type": "image",
+      "source_file": "app/src/main/res/mipmap-xhdpi/ic_launcher_round.webp",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "ic_launcher_round_greenbg",
+      "label": "Green Background Color",
+      "file_type": "image",
+      "source_file": "app/src/main/res/mipmap-xhdpi/ic_launcher_round.webp",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "ic_launcher_round_gridoverlay",
+      "label": "Grid Overlay / Subtle Crosshatch Pattern",
+      "file_type": "image",
+      "source_file": "app/src/main/res/mipmap-xhdpi/ic_launcher_round.webp",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "ic_launcher_round_androidapp",
+      "label": "Android Application (BT Transit)",
+      "file_type": "image",
+      "source_file": "app/src/main/res/mipmap-xhdpi/ic_launcher_round.webp",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "from": "ic_launcher_round_appicon",
+      "to": "ic_launcher_round_androidrobot",
+      "relation": "depicts",
+      "confidence_score": 1.0,
+      "note": "The icon visually depicts the standard Android robot/mascot silhouette in white."
+    },
+    {
+      "from": "ic_launcher_round_appicon",
+      "to": "ic_launcher_round_roundshape",
+      "relation": "has_shape",
+      "confidence_score": 1.0,
+      "note": "The icon uses the Android round adaptive icon shape (circular)."
+    },
+    {
+      "from": "ic_launcher_round_appicon",
+      "to": "ic_launcher_round_greenbg",
+      "relation": "has_background_color",
+      "confidence_score": 1.0,
+      "note": "The background is a medium green color (#4CAF50 or similar Material green)."
+    },
+    {
+      "from": "ic_launcher_round_appicon",
+      "to": "ic_launcher_round_gridoverlay",
+      "relation": "has_visual_element",
+      "confidence_score": 1.0,
+      "note": "A subtle light-colored grid/crosshatch pattern overlays the green background."
+    },
+    {
+      "from": "ic_launcher_round_appicon",
+      "to": "ic_launcher_round_androidapp",
+      "relation": "belongs_to",
+      "confidence_score": 0.9,
+      "note": "This round launcher icon belongs to the BT Transit Android application."
+    },
+    {
+      "from": "ic_launcher_round_androidrobot",
+      "to": "ic_launcher_round_greenbg",
+      "relation": "displayed_on",
+      "confidence_score": 1.0,
+      "note": "The white Android robot silhouette is displayed on top of the green background."
+    },
+    {
+      "from": "ic_launcher_round_appicon",
+      "to": "ic_launcher_round_androidapp",
+      "relation": "is_default_placeholder_icon_for",
+      "confidence_score": 0.85,
+      "note": "This appears to be the default Android Studio-generated placeholder round launcher icon, not a custom-designed BT Transit brand icon."
+    },
+    {
+      "from": "ic_launcher_round_androidrobot",
+      "to": "ic_launcher_round_androidapp",
+      "relation": "represents_platform",
+      "confidence_score": 0.8,
+      "note": "The Android robot mascot represents the Android platform on which BT Transit runs."
+    }
+  ],
+  "hyperedges": [],
+  "input_tokens": 512,
+  "output_tokens": 420
+}
