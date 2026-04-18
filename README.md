@@ -1,2 +1,2 @@
-# SNCP
-2-Stage Neural Compression Pipeline ( Hackathon)
+# BT Transit
+Bloomington Transit App (Luddy Hackathon)
