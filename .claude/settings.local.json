@@ -1,7 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(~/Library/Android/sdk/platform-tools/adb logcat:*)"
-    ]
-  }
-}

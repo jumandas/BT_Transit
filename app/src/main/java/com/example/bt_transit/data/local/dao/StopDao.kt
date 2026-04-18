@@ -46,4 +46,15 @@ interface StopDao {
         INNER JOIN trips t ON t.tripId = st.tripId
     """)
     suspend fun getStopRouteIndex(): List<StopRoutePair>
+
+    @Query("SELECT * FROM stops WHERE name LIKE :query ORDER BY name ASC LIMIT 20")
+    suspend fun searchByName(query: String): List<StopEntity>
+
+    @Query("""
+        SELECT DISTINCT s.* FROM stops s
+        INNER JOIN stop_times st ON st.stopId = s.stopId
+        INNER JOIN trips t ON t.tripId = st.tripId
+        WHERE t.routeId = :routeId AND t.directionId = :directionId
+    """)
+    suspend fun getStopsOnRouteAndDirection(routeId: String, directionId: Int): List<StopEntity>
 }

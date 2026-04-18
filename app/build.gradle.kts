@@ -110,6 +110,9 @@ dependencies {
     implementation(libs.play.services.maps)
     implementation(libs.play.services.location)
 
+    // Splash screen
+    implementation(libs.splashscreen)
+
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)
 
