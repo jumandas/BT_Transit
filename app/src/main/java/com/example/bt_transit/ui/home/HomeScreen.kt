@@ -69,7 +69,7 @@ private val sampleRoutes = listOf(
 )
 
 @Composable
-fun HomeScreen(innerPadding: PaddingValues) {
+fun HomeScreen(innerPadding: PaddingValues, onSearchClick: () -> Unit = {}) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -77,7 +77,7 @@ fun HomeScreen(innerPadding: PaddingValues) {
         contentPadding = PaddingValues(bottom = 16.dp)
     ) {
         item { HeaderSection() }
-        item { SearchBar() }
+        item { SearchBar(onClick = onSearchClick) }
         item {
             SectionTitle("Quick Destinations")
             WaypointRow()
@@ -112,12 +112,13 @@ private fun HeaderSection() {
 }
 
 @Composable
-private fun SearchBar() {
+private fun SearchBar(onClick: () -> Unit) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
-            .padding(top = 16.dp),
+            .padding(top = 16.dp)
+            .clickable { onClick() },
         shape = RoundedCornerShape(12.dp),
         shadowElevation = 4.dp,
         color = MaterialTheme.colorScheme.surface
