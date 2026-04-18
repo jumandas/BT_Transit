@@ -41,7 +41,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 
 private data class Waypoint(
     val label: String,
@@ -75,7 +75,7 @@ private val sampleRoutes = listOf(
 fun HomeScreen(
     innerPadding: PaddingValues,
     onSearchClick: () -> Unit = {},
-    vm: HomeViewModel = viewModel(factory = HomeViewModel.Factory)
+    vm: HomeViewModel = hiltViewModel()
 ) {
     val vehicles by vm.vehicles.collectAsStateWithLifecycle()
 
