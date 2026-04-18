@@ -1,9 +1,12 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+    alias(libs.plugins.protobuf)
 }
 
 android {
@@ -18,6 +21,15 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // Maps API key from local.properties
+        val localProps = rootProject.file("local.properties")
+        val mapsKey = if (localProps.exists()) {
+            val props = Properties()
+            props.load(localProps.inputStream())
+            props.getProperty("MAPS_API_KEY", "")
+        } else ""
+        manifestPlaceholders["MAPS_API_KEY"] = mapsKey
     }
 
     buildTypes {
@@ -92,6 +104,11 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging)
     implementation(libs.moshi.kotlin)
+
+    // Google Maps
+    implementation(libs.maps.compose)
+    implementation(libs.play.services.maps)
+    implementation(libs.play.services.location)
 
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)

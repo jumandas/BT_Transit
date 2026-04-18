@@ -14,7 +14,11 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.shareIn
 
-class RealtimeRepository(private val client: GtfsRtClient = GtfsRtClient()) {
+import javax.inject.Inject
+import javax.inject.Singleton
+
+@Singleton
+class RealtimeRepository @Inject constructor(private val client: GtfsRtClient) {
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
