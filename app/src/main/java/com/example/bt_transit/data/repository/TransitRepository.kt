@@ -62,35 +62,11 @@ class TransitRepository @Inject constructor(
     suspend fun findStopsNear(lat: Double, lng: Double, limit: Int = 10): List<Stop> =
         db.stopDao().findNearest(lat, lng, limit).map { it.toDomain() }
 
-    suspend fun getRouteForTrip(tripId: String): Route? =
-        db.routeDao().findByTripId(tripId)?.toDomain()
-
-    suspend fun getScheduledStopsForTrip(tripId: String): List<ScheduledStop> =
-        db.stopTimeDao().getTripStopsWithInfo(tripId).map { row ->
-            ScheduledStop(
-                stop = Stop(row.stopId, row.stopName, row.lat, row.lng),
-                stopSequence = row.stopSequence,
-                arrivalTime = row.arrivalTime,
-                departureTime = row.departureTime
-            )
-        }
-
-    suspend fun getStopById(stopId: String): Stop? =
-        db.stopDao().getById(stopId)?.toDomain()
-
-    suspend fun getRouteById(routeId: String): Route? =
-        db.routeDao().getById(routeId)?.toDomain()
-
-    suspend fun stopsOnRoute(routeId: String): List<Stop> =
-        db.stopDao().getStopsOnRoute(routeId).map { it.toDomain() }
-
-    suspend fun stopRouteIndex(): Map<String, Set<String>> =
-        db.stopDao().getStopRouteIndex()
-            .groupBy({ it.stopId }, { it.routeId })
-            .mapValues { (_, routes) -> routes.toSet() }
-
-    suspend fun getShapesForRoute(routeId: String): List<List<GeoPoint>> =
-        db.tripDao().getShapeIdsForRoute(routeId).map { getShape(it) }
+    suspend fun getShapeForRoute(routeId: String): List<GeoPoint> {
+        val trip = db.tripDao().getByRoute(routeId).firstOrNull { it.shapeId != null }
+            ?: return emptyList()
+        return getShape(trip.shapeId!!)
+    }
 }
 
 private fun Map<String, String>.toStopEntity(): StopEntity? {

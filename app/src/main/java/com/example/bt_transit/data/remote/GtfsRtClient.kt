@@ -10,18 +10,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.logging.HttpLoggingInterceptor
-import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class GtfsRtClient {
-
-    private val http = OkHttpClient.Builder()
-        .addInterceptor(
-            HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BASIC }
-        )
-        .connectTimeout(10, TimeUnit.SECONDS)
-        .readTimeout(15, TimeUnit.SECONDS)
-        .build()
+@Singleton
+class GtfsRtClient @Inject constructor(
+    private val http: OkHttpClient
+) {
 
     companion object {
         private const val BASE = "https://s3.amazonaws.com/etatransit.gtfs/bloomingtontransit.etaspot.net"

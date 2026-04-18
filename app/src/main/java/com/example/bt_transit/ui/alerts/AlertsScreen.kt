@@ -38,7 +38,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.bt_transit.domain.model.ServiceAlert
 
 private enum class AlertSeverity { HIGH, MEDIUM, LOW }
@@ -55,7 +55,7 @@ private fun String.toDisplayLabel(): String =
 @Composable
 fun AlertsScreen(
     innerPadding: PaddingValues,
-    vm: AlertsViewModel = viewModel(factory = AlertsViewModel.Factory)
+    vm: AlertsViewModel = hiltViewModel()
 ) {
     val alerts by vm.alerts.collectAsStateWithLifecycle()
 
