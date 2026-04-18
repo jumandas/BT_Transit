@@ -13,10 +13,11 @@ import okhttp3.Request
 import javax.inject.Inject
 import javax.inject.Singleton
 
+import javax.inject.Inject
+import javax.inject.Singleton
+
 @Singleton
-class GtfsRtClient @Inject constructor(
-    private val http: OkHttpClient
-) {
+class GtfsRtClient @Inject constructor(private val http: OkHttpClient) {
 
     companion object {
         private const val BASE = "https://s3.amazonaws.com/etatransit.gtfs/bloomingtontransit.etaspot.net"

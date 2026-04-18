@@ -7,11 +7,13 @@ import com.example.bt_transit.data.local.dao.ShapeDao
 import com.example.bt_transit.data.local.dao.StopDao
 import com.example.bt_transit.data.local.dao.StopTimeDao
 import com.example.bt_transit.data.local.dao.TripDao
+import com.example.bt_transit.data.local.dao.WaypointDao
 import com.example.bt_transit.data.local.entity.RouteEntity
 import com.example.bt_transit.data.local.entity.ShapeEntity
 import com.example.bt_transit.data.local.entity.StopEntity
 import com.example.bt_transit.data.local.entity.StopTimeEntity
 import com.example.bt_transit.data.local.entity.TripEntity
+import com.example.bt_transit.data.local.entity.WaypointEntity
 
 @Database(
     entities = [
@@ -19,9 +21,10 @@ import com.example.bt_transit.data.local.entity.TripEntity
         RouteEntity::class,
         TripEntity::class,
         StopTimeEntity::class,
-        ShapeEntity::class
+        ShapeEntity::class,
+        WaypointEntity::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class BTDatabase : RoomDatabase() {
@@ -30,4 +33,5 @@ abstract class BTDatabase : RoomDatabase() {
     abstract fun tripDao(): TripDao
     abstract fun stopTimeDao(): StopTimeDao
     abstract fun shapeDao(): ShapeDao
+    abstract fun waypointDao(): WaypointDao
 }

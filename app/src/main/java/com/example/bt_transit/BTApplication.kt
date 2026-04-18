@@ -5,6 +5,7 @@ import android.util.Log
 import com.example.bt_transit.data.local.BTDatabase
 import com.example.bt_transit.data.repository.RealtimeRepository
 import com.example.bt_transit.data.repository.TransitRepository
+import com.example.bt_transit.notifications.ArrivalWatcher
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,6 +23,7 @@ class BTApplication : Application() {
     @Inject lateinit var transitRepo: TransitRepository
     @Inject lateinit var realtimeRepo: RealtimeRepository
     @Inject lateinit var db: BTDatabase
+    @Inject lateinit var arrivalWatcher: ArrivalWatcher
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
@@ -80,6 +82,8 @@ class BTApplication : Application() {
                 }
             }
             .launchIn(scope)
+
+        arrivalWatcher.start()
     }
 
     companion object {
