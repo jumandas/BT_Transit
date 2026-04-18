@@ -17,4 +17,7 @@ interface TripDao {
 
     @Query("SELECT * FROM trips WHERE routeId = :routeId")
     suspend fun getByRoute(routeId: String): List<TripEntity>
+
+    @Query("SELECT DISTINCT shapeId FROM trips WHERE routeId = :routeId AND shapeId IS NOT NULL")
+    suspend fun getShapeIdsForRoute(routeId: String): List<String>
 }

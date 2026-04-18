@@ -12,6 +12,7 @@ import com.example.bt_transit.data.local.entity.TripEntity
 import com.example.bt_transit.data.remote.GtfsStaticClient
 import com.example.bt_transit.domain.model.GeoPoint
 import com.example.bt_transit.domain.model.Route
+import com.example.bt_transit.domain.model.ScheduledStop
 import com.example.bt_transit.domain.model.Stop
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
