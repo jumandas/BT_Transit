@@ -60,6 +60,12 @@ class TransitRepository @Inject constructor(
 
     suspend fun findStopsNear(lat: Double, lng: Double, limit: Int = 10): List<Stop> =
         db.stopDao().findNearest(lat, lng, limit).map { it.toDomain() }
+
+    suspend fun getShapeForRoute(routeId: String): List<GeoPoint> {
+        val trip = db.tripDao().getByRoute(routeId).firstOrNull { it.shapeId != null }
+            ?: return emptyList()
+        return getShape(trip.shapeId!!)
+    }
 }
 
 private fun Map<String, String>.toStopEntity(): StopEntity? {
