@@ -29,6 +29,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,80 +37,43 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.bt_transit.domain.model.ServiceAlert
 
 private enum class AlertSeverity { HIGH, MEDIUM, LOW }
 
-private data class ServiceAlert(
-    val id: String,
-    val cause: String,
-    val effect: String,
-    val header: String,
-    val description: String,
-    val affectedRoutes: List<String>,
-    val severity: AlertSeverity,
-    val timeRange: String
-)
+private fun ServiceAlert.severity(): AlertSeverity = when (effect) {
+    "NO_SERVICE", "SIGNIFICANT_DELAYS" -> AlertSeverity.HIGH
+    "DETOUR", "REDUCED_SERVICE", "MODIFIED_SERVICE" -> AlertSeverity.MEDIUM
+    else -> AlertSeverity.LOW
+}
 
-private val sampleAlerts = listOf(
-    ServiceAlert(
-        id = "alert_001",
-        cause = "WEATHER",
-        effect = "SIGNIFICANT_DELAYS",
-        header = "Delays due to severe weather",
-        description = "Heavy rain and flooding on 3rd Street corridor is causing delays of up to 15 minutes on Routes 1, 6, and 9. Drivers are taking alternate roads where possible.",
-        affectedRoutes = listOf("1", "6", "9"),
-        severity = AlertSeverity.HIGH,
-        timeRange = "Until 6:00 PM today"
-    ),
-    ServiceAlert(
-        id = "alert_002",
-        cause = "CONSTRUCTION",
-        effect = "DETOUR",
-        header = "Route 3 detour — Dunn St construction",
-        description = "Northbound Route 3 is detouring via Rogers St between 4th and 10th due to ongoing water main work. Stops on Dunn St between 4th and 10th are temporarily suspended.",
-        affectedRoutes = listOf("3"),
-        severity = AlertSeverity.MEDIUM,
-        timeRange = "Apr 18 – Apr 25"
-    ),
-    ServiceAlert(
-        id = "alert_003",
-        cause = "MAINTENANCE",
-        effect = "REDUCED_SERVICE",
-        header = "Route 11 frequency reduced this weekend",
-        description = "The IU Campus Loop (Route 11) will run every 30 minutes instead of every 15 minutes this Saturday and Sunday due to scheduled bus maintenance.",
-        affectedRoutes = listOf("11"),
-        severity = AlertSeverity.LOW,
-        timeRange = "Sat–Sun, Apr 19–20"
-    ),
-    ServiceAlert(
-        id = "alert_004",
-        cause = "TECHNICAL_PROBLEM",
-        effect = "MODIFIED_SERVICE",
-        header = "Transit Center bay reassignments",
-        description = "Routes 4, 5, and 14 are boarding from temporary bays B3 and B4 at the Transit Center while electrical work is completed on the main platform.",
-        affectedRoutes = listOf("4", "5", "14"),
-        severity = AlertSeverity.LOW,
-        timeRange = "Today only"
-    )
-)
+private fun String.toDisplayLabel(): String =
+    replace("_", " ").lowercase().replaceFirstChar { it.uppercase() }
 
 @Composable
-fun AlertsScreen(innerPadding: PaddingValues) {
+fun AlertsScreen(
+    innerPadding: PaddingValues,
+    vm: AlertsViewModel = viewModel(factory = AlertsViewModel.Factory)
+) {
+    val alerts by vm.alerts.collectAsStateWithLifecycle()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(innerPadding)
     ) {
-        AlertsHeader(activeCount = sampleAlerts.size)
+        AlertsHeader(activeCount = alerts.size)
 
-        if (sampleAlerts.isEmpty()) {
+        if (alerts.isEmpty()) {
             NoAlertsPlaceholder()
         } else {
             LazyColumn(
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                items(sampleAlerts, key = { it.id }) { alert ->
+                items(alerts, key = { it.id }) { alert ->
                     AlertCard(alert)
                 }
             }
@@ -131,7 +95,8 @@ private fun AlertsHeader(activeCount: Int) {
             color = MaterialTheme.colorScheme.onPrimary
         )
         Text(
-            text = "$activeCount active alert${if (activeCount != 1) "s" else ""}",
+            text = if (activeCount > 0) "$activeCount active alert${if (activeCount != 1) "s" else ""}"
+                   else "All routes running normally",
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
         )
@@ -140,7 +105,8 @@ private fun AlertsHeader(activeCount: Int) {
 
 @Composable
 private fun AlertCard(alert: ServiceAlert) {
-    val (bgColor, iconColor, icon) = alertStyle(alert.severity)
+    val severity = alert.severity()
+    val (bgColor, iconColor, icon) = alertStyle(severity)
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -149,7 +115,6 @@ private fun AlertCard(alert: ServiceAlert) {
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
-            // Severity bar + header row
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -159,53 +124,40 @@ private fun AlertCard(alert: ServiceAlert) {
             ) {
                 Icon(
                     imageVector = icon,
-                    contentDescription = alert.severity.name,
+                    contentDescription = null,
                     tint = iconColor,
                     modifier = Modifier.size(20.dp)
                 )
                 Spacer(Modifier.width(10.dp))
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = alert.header,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                }
+                Text(
+                    text = alert.header.ifEmpty { alert.effect.toDisplayLabel() },
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
             }
 
-            // Description
             Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
-                Text(
-                    text = alert.description,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
-                )
+                if (alert.description.isNotEmpty()) {
+                    Text(
+                        text = alert.description,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
+                    )
+                    Spacer(Modifier.height(12.dp))
+                }
 
-                Spacer(Modifier.height(12.dp))
-
-                // Footer: cause badge + affected routes + time
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    CauseBadge(alert.cause)
-
+                    CauseBadge(alert.cause.toDisplayLabel())
                     Spacer(Modifier.width(8.dp))
-
                     LazyRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                        items(alert.affectedRoutes) { route ->
+                        items(alert.affectedRouteIds) { route ->
                             RouteBadge(route)
                         }
                     }
-
-                    Spacer(Modifier.weight(1f))
-
-                    Text(
-                        text = alert.timeRange,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
-                    )
                 }
             }
         }
@@ -213,10 +165,7 @@ private fun AlertCard(alert: ServiceAlert) {
 }
 
 @Composable
-private fun CauseBadge(cause: String) {
-    val label = cause.replace("_", " ").lowercase()
-        .replaceFirstChar { it.uppercase() }
-
+private fun CauseBadge(label: String) {
     Surface(
         shape = RoundedCornerShape(6.dp),
         color = MaterialTheme.colorScheme.secondaryContainer

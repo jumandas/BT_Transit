@@ -5,18 +5,31 @@ import com.example.bt_transit.domain.model.ServiceAlert
 import com.example.bt_transit.domain.model.StopTimeUpdate
 import com.example.bt_transit.domain.model.TripUpdate
 import com.example.bt_transit.domain.model.Vehicle
-import com.google.transit.realtime.GtfsRealtime.FeedMessage
+import com.google.transit.realtime.GtfsRealtime
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import javax.inject.Inject
-import javax.inject.Singleton
+import okhttp3.logging.HttpLoggingInterceptor
+import java.util.concurrent.TimeUnit
 
-@Singleton
-class GtfsRtClient @Inject constructor(
-    private val http: OkHttpClient
-) {
+class GtfsRtClient {
+
+    private val http = OkHttpClient.Builder()
+        .addInterceptor(
+            HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BASIC }
+        )
+        .connectTimeout(10, TimeUnit.SECONDS)
+        .readTimeout(15, TimeUnit.SECONDS)
+        .build()
+
+    companion object {
+        private const val BASE = "https://s3.amazonaws.com/etatransit.gtfs/bloomingtontransit.etaspot.net"
+        const val POSITIONS = "$BASE/position_updates.pb"
+        const val TRIP_UPDATES = "$BASE/trip_updates.pb"
+        const val ALERTS = "$BASE/alerts.pb"
+        private const val TAG = "GtfsRtClient"
+    }
 
     suspend fun fetchVehicles(): List<Vehicle> = withContext(Dispatchers.IO) {
         val feed = fetchFeed(POSITIONS) ?: return@withContext emptyList()
@@ -24,7 +37,7 @@ class GtfsRtClient @Inject constructor(
             if (!entity.hasVehicle()) return@mapNotNull null
             val v = entity.vehicle
             Vehicle(
-                vehicleId = v.vehicle.id.ifEmpty { entity.id },
+                vehicleId = v.vehicle.id,
                 tripId = v.trip.tripId.ifEmpty { null },
                 routeId = v.trip.routeId.ifEmpty { null },
                 lat = v.position.latitude.toDouble(),
@@ -69,33 +82,26 @@ class GtfsRtClient @Inject constructor(
                 effect = a.effect.name,
                 header = a.headerText.translationList.firstOrNull()?.text.orEmpty(),
                 description = a.descriptionText.translationList.firstOrNull()?.text.orEmpty(),
-                affectedRouteIds = a.informedEntityList.mapNotNull { it.routeId.ifEmpty { null } }
+                affectedRouteIds = a.informedEntityList.mapNotNull {
+                    it.routeId.ifEmpty { null }
+                }
             )
         }
     }
 
-    private fun fetchFeed(url: String): FeedMessage? {
+    private fun fetchFeed(url: String): GtfsRealtime.FeedMessage? {
         return try {
-            val request = Request.Builder().url(url).build()
-            http.newCall(request).execute().use { response ->
-                if (!response.isSuccessful) {
-                    Log.w(TAG, "Feed $url returned HTTP ${response.code}")
+            val req = Request.Builder().url(url).build()
+            http.newCall(req).execute().use { resp ->
+                if (!resp.isSuccessful) {
+                    Log.w(TAG, "HTTP ${resp.code} for $url")
                     return null
                 }
-                val body = response.body ?: return null
-                FeedMessage.parseFrom(body.byteStream())
+                GtfsRealtime.FeedMessage.parseFrom(resp.body!!.byteStream())
             }
         } catch (t: Throwable) {
-            Log.w(TAG, "Failed to fetch/parse $url", t)
+            Log.w(TAG, "Failed to fetch $url: ${t.message}")
             null
         }
-    }
-
-    companion object {
-        private const val TAG = "GtfsRtClient"
-        private const val BASE = "https://s3.amazonaws.com/etatransit.gtfs/bloomingtontransit.etaspot.net"
-        const val POSITIONS = "$BASE/position_updates.pb"
-        const val TRIP_UPDATES = "$BASE/trip_updates.pb"
-        const val ALERTS = "$BASE/alerts.pb"
     }
 }

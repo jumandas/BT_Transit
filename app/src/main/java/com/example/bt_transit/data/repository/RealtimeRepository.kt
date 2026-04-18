@@ -13,52 +13,42 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.shareIn
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class RealtimeRepository @Inject constructor(
-    private val client: GtfsRtClient
-) {
+class RealtimeRepository(private val client: GtfsRtClient = GtfsRtClient()) {
+
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     val vehicles: Flow<List<Vehicle>> = flow {
         while (true) {
             emit(client.fetchVehicles())
-            delay(VEHICLE_POLL_MS)
+            delay(10_000L)
         }
     }.flowOn(Dispatchers.IO).shareIn(
         scope = scope,
-        started = SharingStarted.WhileSubscribed(KEEP_ALIVE_MS),
+        started = SharingStarted.WhileSubscribed(5_000),
         replay = 1
     )
 
     val tripUpdates: Flow<List<TripUpdate>> = flow {
         while (true) {
             emit(client.fetchTripUpdates())
-            delay(TRIP_POLL_MS)
+            delay(10_000L)
         }
     }.flowOn(Dispatchers.IO).shareIn(
         scope = scope,
-        started = SharingStarted.WhileSubscribed(KEEP_ALIVE_MS),
+        started = SharingStarted.WhileSubscribed(5_000),
         replay = 1
     )
 
+    // Alerts change rarely — poll every 30 seconds
     val alerts: Flow<List<ServiceAlert>> = flow {
         while (true) {
             emit(client.fetchAlerts())
-            delay(ALERT_POLL_MS)
+            delay(30_000L)
         }
     }.flowOn(Dispatchers.IO).shareIn(
         scope = scope,
-        started = SharingStarted.WhileSubscribed(KEEP_ALIVE_MS),
+        started = SharingStarted.WhileSubscribed(5_000),
         replay = 1
     )
-
-    companion object {
-        private const val VEHICLE_POLL_MS = 10_000L
-        private const val TRIP_POLL_MS = 10_000L
-        private const val ALERT_POLL_MS = 30_000L
-        private const val KEEP_ALIVE_MS = 5_000L
-    }
 }
