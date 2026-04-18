@@ -32,6 +32,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,6 +40,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 private data class Waypoint(
     val label: String,
@@ -69,14 +72,20 @@ private val sampleRoutes = listOf(
 )
 
 @Composable
-fun HomeScreen(innerPadding: PaddingValues, onSearchClick: () -> Unit = {}) {
+fun HomeScreen(
+    innerPadding: PaddingValues,
+    onSearchClick: () -> Unit = {},
+    vm: HomeViewModel = viewModel(factory = HomeViewModel.Factory)
+) {
+    val vehicles by vm.vehicles.collectAsStateWithLifecycle()
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(innerPadding),
         contentPadding = PaddingValues(bottom = 16.dp)
     ) {
-        item { HeaderSection() }
+        item { HeaderSection(activeBusCount = vehicles.size) }
         item { SearchBar(onClick = onSearchClick) }
         item {
             SectionTitle("Quick Destinations")
@@ -90,7 +99,7 @@ fun HomeScreen(innerPadding: PaddingValues, onSearchClick: () -> Unit = {}) {
 }
 
 @Composable
-private fun HeaderSection() {
+private fun HeaderSection(activeBusCount: Int) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -98,7 +107,8 @@ private fun HeaderSection() {
             .padding(horizontal = 20.dp, vertical = 24.dp)
     ) {
         Text(
-            text = "Good morning",
+            text = if (activeBusCount > 0) "$activeBusCount buses active now"
+                   else "Loading live buses...",
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
         )
