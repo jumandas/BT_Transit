@@ -35,13 +35,17 @@ class GtfsStaticClient @Inject constructor(
     }
 
     private fun parseCsv(reader: BufferedReader): List<Map<String, String>> {
-        val lines = reader.readLines().filter { it.isNotBlank() }
-        if (lines.isEmpty()) return emptyList()
-        val header = parseCsvLine(lines[0].removePrefix("\uFEFF"))
-        return lines.drop(1).map { line ->
+        // Must not close this reader: it wraps the ZipInputStream we still need for the next entry.
+        val headerLine = reader.readLine() ?: return emptyList()
+        val header = parseCsvLine(headerLine.removePrefix("\uFEFF"))
+        val rows = mutableListOf<Map<String, String>>()
+        while (true) {
+            val line = reader.readLine() ?: break
+            if (line.isBlank()) continue
             val values = parseCsvLine(line)
-            header.mapIndexed { i, key -> key to (values.getOrNull(i) ?: "") }.toMap()
+            rows.add(header.mapIndexed { i, key -> key to (values.getOrNull(i) ?: "") }.toMap())
         }
+        return rows
     }
 
     private fun parseCsvLine(line: String): List<String> {
