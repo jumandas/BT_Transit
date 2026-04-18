@@ -9,15 +9,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.example.bt_transit.ui.components.AnimatedBusMarker
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
-import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
-import com.google.maps.android.compose.rememberMarkerState
 
 private val BLOOMINGTON = LatLng(39.1653, -86.5264)
 
@@ -53,17 +51,9 @@ fun MapScreen(
             }
         }
 
-        // Bus markers
+        // Animated bus markers — glide between poll updates
         vehicles.forEach { vehicle ->
-            Marker(
-                state = rememberMarkerState(
-                    key = vehicle.vehicleId,
-                    position = LatLng(vehicle.lat, vehicle.lng)
-                ),
-                title = "Route ${vehicle.routeId ?: "Unknown"}",
-                snippet = "Vehicle ${vehicle.vehicleId}",
-                icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)
-            )
+            AnimatedBusMarker(vehicle = vehicle)
         }
     }
 }
