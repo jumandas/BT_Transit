@@ -4,7 +4,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -21,8 +20,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.bt_transit.ui.alerts.AlertsScreen
 import com.example.bt_transit.ui.home.HomeScreen
 import com.example.bt_transit.ui.map.MapScreen
-import com.example.bt_transit.ui.profile.ProfileScreen
 import com.example.bt_transit.ui.schedule.ScheduleScreen
+import com.example.bt_transit.ui.search.SearchScreen
 
 private data class NavItem(
     val route: String,
@@ -34,9 +33,10 @@ private val navItems = listOf(
     NavItem("home", "Home", Icons.Default.Home),
     NavItem("map", "Map", Icons.Default.Map),
     NavItem("schedule", "Schedule", Icons.Default.Schedule),
-    NavItem("alerts", "Alerts", Icons.Default.Notifications),
-    NavItem("profile", "Profile", Icons.Default.Person)
+    NavItem("alerts", "Alerts", Icons.Default.Notifications)
 )
+
+private val bottomBarRoutes = navItems.map { it.route }.toSet()
 
 @Composable
 fun AppNavigation() {
@@ -46,20 +46,22 @@ fun AppNavigation() {
 
     Scaffold(
         bottomBar = {
-            NavigationBar {
-                navItems.forEach { item ->
-                    NavigationBarItem(
-                        selected = currentRoute == item.route,
-                        onClick = {
-                            nav.navigate(item.route) {
-                                launchSingleTop = true
-                                popUpTo("home") { saveState = true }
-                                restoreState = true
-                            }
-                        },
-                        icon = { Icon(item.icon, contentDescription = item.label) },
-                        label = { Text(item.label) }
-                    )
+            if (currentRoute in bottomBarRoutes) {
+                NavigationBar {
+                    navItems.forEach { item ->
+                        NavigationBarItem(
+                            selected = currentRoute == item.route,
+                            onClick = {
+                                nav.navigate(item.route) {
+                                    launchSingleTop = true
+                                    popUpTo("home") { saveState = true }
+                                    restoreState = true
+                                }
+                            },
+                            icon = { Icon(item.icon, contentDescription = item.label) },
+                            label = { Text(item.label) }
+                        )
+                    }
                 }
             }
         }
@@ -68,11 +70,18 @@ fun AppNavigation() {
             navController = nav,
             startDestination = "home"
         ) {
-            composable("home") { HomeScreen(innerPadding) }
+            composable("home") {
+                HomeScreen(
+                    innerPadding = innerPadding,
+                    onSearchClick = { nav.navigate("search") }
+                )
+            }
             composable("map") { MapScreen(innerPadding) }
             composable("schedule") { ScheduleScreen(innerPadding) }
             composable("alerts") { AlertsScreen(innerPadding) }
-            composable("profile") { ProfileScreen(innerPadding) }
+            composable("search") {
+                SearchScreen(onBack = { nav.popBackStack() })
+            }
         }
     }
 }
